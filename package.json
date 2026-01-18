@@ -2,7 +2,8 @@
   "type": "module",
   "scripts": {
     "build": "postcss assets/css/styles.css -o dist/assets/css/styles.css",
-    "watch": "postcss assets/css/styles.css -o dist/assets/css/styles.css --watch"
+    "watch": "postcss assets/css/styles.css -o dist/assets/css/styles.css --watch",
+    "build:css": "postcss src/input.css -o dist/output.css"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.18",
