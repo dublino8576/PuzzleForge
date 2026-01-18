@@ -10,6 +10,37 @@
   font-style: normal !important;
 } */
 body {
-  @apply bg-gray-100 text-gray-800;
   font-family: "Luckiest Guy", cursive;
 }
+
+p,
+button,
+li,
+span {
+  font-family: "Nunito", sans-serif;
+}
+
+header h1,
+#achievements-section h2 {
+  background: linear-gradient(
+    to right,
+    #4acfee,
+    #6070fd,
+    #2a46ff,
+    #0099ff,
+    #4acfee
+  );
+  background-size: 200%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: animate-gradient 7s linear infinite;
+}
+
+@keyframes animate-gradient {
+  to {
+    background-position: 200%;
+  }
+}
+
+/* Canvas styles */
