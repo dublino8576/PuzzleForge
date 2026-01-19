@@ -82,14 +82,18 @@ window.addEventListener("DOMContentLoaded", function () {
     );
     drawGrid(context, canvas, 3, 3, originX, originY, drawWidth, drawHeight);
   }
+  // When you press the mouse button, we find exactly where you clicked on the canvas
+  // We check if that position is inside any puzzle piece
+  // Offset = the distance from the piece's corner to where your mouse is. If you click in the middle of a piece, the offset remembers "you grabbed it 25px from the left and 15px from the top"
+
   canvas.addEventListener("mousedown", function (e) {
-    const { x, y } = getMousePos(canvas, e);
-    selectedPiece = pressedPiece(x, y, puzzlePieces);
+    const { x, y } = getMousePos(canvas, e); // Get where you clicked (relative to canvas)
+    selectedPiece = pressedPiece(x, y, puzzlePieces); // Check if you clicked a piece
     /* Offset needed to drag piece from cursor position smoothly, registers mouse movement to the selected piece */
     if (selectedPiece !== null) {
       selectedPiece.offset = {
-        x: x - selectedPiece.currentX,
-        y: y - selectedPiece.currentY,
+        x: x - selectedPiece.currentX, // Distance from piece's left edge to your click
+        y: y - selectedPiece.currentY, // Distance from piece's top edge to your click
       };
     }
   });
@@ -97,15 +101,15 @@ window.addEventListener("DOMContentLoaded", function () {
   /* mousemove event to drag selected piece */
   canvas.addEventListener("mousemove", function (e) {
     if (selectedPiece) {
-      const { x, y } = getMousePos(canvas, e);
+      const { x, y } = getMousePos(canvas, e); // Get current mouse position
       /* update piece position based on mouse movement and offset */
-      selectedPiece.currentX = x - selectedPiece.offset.x;
-      selectedPiece.currentY = y - selectedPiece.offset.y;
-      drawPuzzle(context, canvas, image, puzzlePieces);
+      selectedPiece.currentX = x - selectedPiece.offset.x; //mouse position minus offset
+      selectedPiece.currentY = y - selectedPiece.offset.y; //mouse position minus offset
+      drawPuzzle(context, canvas, image, puzzlePieces); // Redraw the puzzle with the piece in its new position
     }
   });
 
-  /* release on mouseup */
+  /* release piece on mouseup */
   canvas.addEventListener("mouseup", function () {
     selectedPiece = null;
   });
@@ -292,11 +296,13 @@ function pressedPiece(x, y, pieces) {
   return null;
 }
 
-/* convert mouse coordinates to canvas space */
+/* convert mouse coordinates to canvas space
+since coordinates from mouse event are relative to the viewport and canvas is not positioned at the top-left corner (0,0) of the viewport */
 function getMousePos(canvasEl, e) {
-  const rect = canvasEl.getBoundingClientRect();
+  const rect = canvasEl.getBoundingClientRect(); //Gets the exact position and size of the canvas element on the screen
   return {
-    x: e.clientX - rect.left,
-    y: e.clientY - rect.top,
+    x: e.clientX - rect.left, //left edge of canvas
+    y: e.clientY - rect.top, //top edge of canvas
+    //clientX and clientY are mouse coordinates relative to the viewport
   };
 }
