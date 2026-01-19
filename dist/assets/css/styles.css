@@ -196,6 +196,7 @@
     --color-stone-800: oklch(26.8% 0.007 34.298);
     --color-stone-900: oklch(21.6% 0.006 56.043);
     --color-stone-950: oklch(14.7% 0.004 49.25);
+    --color-black: #000;
     --color-white: #fff;
     --spacing: 0.25rem;
     --breakpoint-md: 48rem;
@@ -856,6 +857,9 @@
   .mx-auto {
     margin-inline: auto;
   }
+  .my-4 {
+    margin-block: calc(var(--spacing) * 4);
+  }
   .me-1\.5 {
     margin-inline-end: calc(var(--spacing) * 1.5);
   }
@@ -864,9 +868,6 @@
   }
   .mt-2 {
     margin-top: calc(var(--spacing) * 2);
-  }
-  .mt-4 {
-    margin-top: calc(var(--spacing) * 4);
   }
   .apexcharts-canvas {
     & .apexcharts-tooltip {
@@ -1271,6 +1272,9 @@
   .h-0 {
     height: calc(var(--spacing) * 0);
   }
+  .h-3\/4 {
+    height: calc(3/4 * 100%);
+  }
   .h-4 {
     height: calc(var(--spacing) * 4);
   }
@@ -1286,14 +1290,23 @@
   .h-48 {
     height: calc(var(--spacing) * 48);
   }
+  .h-\[80vh\] {
+    height: 80vh;
+  }
   .h-\[calc\(100\%-1rem\)\] {
     height: calc(100% - 1rem);
+  }
+  .h-auto {
+    height: auto;
   }
   .h-full {
     height: 100%;
   }
   .max-h-24 {
     max-height: calc(var(--spacing) * 24);
+  }
+  .max-h-\[80vh\] {
+    max-height: 80vh;
   }
   .max-h-full {
     max-height: 100%;
@@ -1372,6 +1385,9 @@
   .w-1\/2 {
     width: calc(1/2 * 100%);
   }
+  .w-3\/4 {
+    width: calc(3/4 * 100%);
+  }
   .w-4 {
     width: calc(var(--spacing) * 4);
   }
@@ -1390,6 +1406,9 @@
   .w-64 {
     width: calc(var(--spacing) * 64);
   }
+  .w-\[80vw\] {
+    width: 80vw;
+  }
   .w-auto {
     width: auto;
   }
@@ -1399,8 +1418,14 @@
   .max-w-2xl {
     max-width: var(--container-2xl);
   }
+  .max-w-3\/4 {
+    max-width: calc(3/4 * 100%);
+  }
   .max-w-64 {
     max-width: calc(var(--spacing) * 64);
+  }
+  .max-w-\[80vw\] {
+    max-width: 80vw;
   }
   .datatable-input {
     .datatable-wrapper .datatable-search & {
@@ -2115,6 +2140,9 @@
       color: var(--color-heading);
     }
   }
+  .text-black {
+    color: var(--color-black);
+  }
   .text-body {
     color: var(--color-body);
   }
@@ -2359,6 +2387,11 @@
       --tw-ring-color: var(--color-brand-medium);
     }
   }
+  .focus\:ring-gray-200 {
+    &:focus {
+      --tw-ring-color: var(--color-gray-200);
+    }
+  }
   .focus\:ring-neutral-tertiary {
     &:focus {
       --tw-ring-color: var(--color-neutral-tertiary);
@@ -2527,6 +2560,15 @@
       }
     }
   }
+  .dark\:hover\:bg-gray-700 {
+    @media (prefers-color-scheme: dark) {
+      &:hover {
+        @media (hover: hover) {
+          background-color: var(--color-gray-700);
+        }
+      }
+    }
+  }
   .dark\:hover\:bg-gray-800 {
     @media (prefers-color-scheme: dark) {
       &:hover {
@@ -2556,6 +2598,13 @@
     @media (prefers-color-scheme: dark) {
       &:focus {
         --tw-ring-color: var(--color-gray-600);
+      }
+    }
+  }
+  .dark\:focus\:ring-gray-700 {
+    @media (prefers-color-scheme: dark) {
+      &:focus {
+        --tw-ring-color: var(--color-gray-700);
       }
     }
   }
@@ -2672,6 +2721,23 @@ header h1,
   to {
     background-position: 200%;
   }
+}
+@layer utilities {
+  .bg-dark-backdrop {
+    background-color: var(--color-dark-backdrop);
+  }
+  .bg-dark-soft {
+    background-color: var(--color-dark-soft);
+  }
+  .bg-light-medium {
+    background-color: var(--color-light-medium);
+  }
+}
+html.dark .dark\:bg-dark-backdrop {
+  background-color: var(--color-dark-backdrop) !important;
+}
+html.dark .dark\:bg-dark-soft {
+  background-color: var(--color-dark-soft) !important;
 }
 @layer base {
   .tooltip-arrow,.tooltip-arrow:before {
