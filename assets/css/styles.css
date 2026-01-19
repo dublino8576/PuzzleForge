@@ -1,7 +1,6 @@
 @import "tailwindcss";
 @plugin "flowbite/plugin";
 @source "../../node_modules/flowbite";
-
 @import "flowbite/src/themes/default";
 
 /* h1.luckiest-guy-regular {
@@ -19,6 +18,8 @@ li,
 span {
   font-family: "Nunito", sans-serif;
 }
+
+/* (sources declared at top) */
 
 header h1,
 #achievements-section h2 {
@@ -44,3 +45,24 @@ header h1,
 }
 
 /* Canvas styles */
+
+/* Map Flowbite tokens to utilities with explicit dark variants */
+@layer utilities {
+  .bg-dark-backdrop {
+    background-color: var(--color-dark-backdrop);
+  }
+  .bg-dark-soft {
+    background-color: var(--color-dark-soft);
+  }
+  .bg-light-medium {
+    background-color: var(--color-light-medium);
+  }
+}
+
+/* Explicit dark mode selectors for custom utilities (when html has .dark class) */
+html.dark .dark\:bg-dark-backdrop {
+  background-color: var(--color-dark-backdrop) !important;
+}
+html.dark .dark\:bg-dark-soft {
+  background-color: var(--color-dark-soft) !important;
+}
