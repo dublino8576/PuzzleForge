@@ -1,5 +1,5 @@
 /* load script when page is fully loaded */
-window.addEventListener("load", function () {
+window.addEventListener("DOMContentLoaded", function () {
   const canvas = document.getElementById("puzzle-canvas");
   const context = canvas.getContext("2d");
   /*canvas max width and height for responsive devices */
@@ -11,7 +11,7 @@ window.addEventListener("load", function () {
   /*set image height and width to fit within max dimensions while maintaining aspect ratio */
   /* array to store puzzle pieces */
   let puzzlePieces = [];
-
+  let selectedPiece = null;
   image.onload = function () {
     /* set canvas to match parent section size */
     const puzzleSection = document.getElementById("puzzle-section");
@@ -82,14 +82,33 @@ window.addEventListener("load", function () {
     );
     drawGrid(context, canvas, 3, 3, originX, originY, drawWidth, drawHeight);
   }
+  canvas.addEventListener("mousedown", function (e) {
+    const { x, y } = getMousePos(canvas, e);
+    selectedPiece = pressedPiece(x, y, puzzlePieces);
+    /* Offset needed to drag piece from cursor position smoothly, registers mouse movement to the selected piece */
+    if (selectedPiece !== null) {
+      selectedPiece.offset = {
+        x: x - selectedPiece.currentX,
+        y: y - selectedPiece.currentY,
+      };
+    }
+  });
 
-  //   canvas.addEventListener("mousedown", function (event) {
-  //     /* get mouse position relative to canvas */
-  //     const rect = canvas.getBoundingClientRect();
-  //     const mouseX = event.clientX - rect.left;
-  //     const mouseY = event.clientY - rect.top;
-  //     console.log("Mouse down at:", mouseX, mouseY);
-  //   });
+  /* mousemove event to drag selected piece */
+  canvas.addEventListener("mousemove", function (e) {
+    if (selectedPiece) {
+      const { x, y } = getMousePos(canvas, e);
+      /* update piece position based on mouse movement and offset */
+      selectedPiece.currentX = x - selectedPiece.offset.x;
+      selectedPiece.currentY = y - selectedPiece.offset.y;
+      drawPuzzle(context, canvas, image, puzzlePieces);
+    }
+  });
+
+  /* release on mouseup */
+  canvas.addEventListener("mouseup", function () {
+    selectedPiece = null;
+  });
 });
 
 ///////////////////////////////////////
@@ -252,4 +271,32 @@ function shufflePuzzlePieces(pieces, canvasEl) {
     pieces[i].currentX = location.x;
     pieces[i].currentY = location.y;
   }
+}
+
+/////////////
+/* Determine which puzzle piece is being pressed based on mouse coordinates */
+/////////////
+
+function pressedPiece(x, y, pieces) {
+  for (let i = 0; i < pieces.length; i++) {
+    const piece = pieces[i];
+    if (
+      x >= piece.currentX &&
+      x < piece.currentX + piece.width &&
+      y >= piece.currentY &&
+      y < piece.currentY + piece.height
+    ) {
+      return piece;
+    }
+  }
+  return null;
+}
+
+/* convert mouse coordinates to canvas space */
+function getMousePos(canvasEl, e) {
+  const rect = canvasEl.getBoundingClientRect();
+  return {
+    x: e.clientX - rect.left,
+    y: e.clientY - rect.top,
+  };
 }
