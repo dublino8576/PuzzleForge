@@ -6,14 +6,14 @@ PuzzleForge is an interactive web-based puzzle game that challenges players to r
 
 To view the Kanban board, follow the link below:
 
-![PuzzleForge Project](https://github.com/users/dublino8576/projects/11) 
+[PuzzleForge Project](https://github.com/users/dublino8576/projects/11) 
 
 ---
 
 ## Table of Contents
 
-- [User Value](#user-value)
 - [Screenshots](#screenshots)
+- [User Value](#user-value)
 - [Features](#features)
 - [Technologies Used](#technologies-used)
 - [Installation & Deployment](#installation--deployment)
@@ -27,6 +27,25 @@ To view the Kanban board, follow the link below:
 
 ## Screenshots
 
+### @ 1440px
+
+<img width="2850" height="2158" alt="PuzzleForge_screenshot1440px" src="https://github.com/user-attachments/assets/4f572f82-e578-44c6-bd2d-ddf95814856e" />
+
+### @ 1024px
+
+<img width="2018" height="1976" alt="PuzzleForge_screenshot1024px" src="https://github.com/user-attachments/assets/2d346095-b422-4a36-97f1-c619f3296e57" />
+
+### @ 768px
+
+<img width="1506" height="1682" alt="PuzzleForge_screenshot768px" src="https://github.com/user-attachments/assets/c775e366-cd15-49c9-a3d7-9008a0867d4d" />
+
+### @ 320px
+
+<img width="610" height="1770" alt="PuzzleForge_screenshot320px" src="https://github.com/user-attachments/assets/ed561159-f4a6-4639-9002-64eee1643b97" />
+
+### @ 320px landscape mode
+
+<img width="1078" height="1348" alt="PuzzleForge_screenshot320px_landscapeMode" src="https://github.com/user-attachments/assets/06d888c9-b52b-44a5-a03b-86dcea60775c" />
 
 
 ## User Value
@@ -316,4 +335,5 @@ This project is for educational purposes as part of Code Institute coursework.
 ---
 
 **PuzzleForge** - Crafted Challenges. Sharpened Minds.
+
 
