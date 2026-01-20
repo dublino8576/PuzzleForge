@@ -11,6 +11,10 @@ To view the Kanban board, follow the link below:
 
 [PuzzleForge Project](https://github.com/users/dublino8576/projects/11) 
 
+View Validation.md to see screenshots of the validators + performance scores
+
+[Validation.md](https://github.com/dublino8576/PuzzleForge/blob/main/validations/validations.md)
+
 ---
 
 ## Table of Contents
@@ -331,6 +335,7 @@ This project is for educational purposes as part of Code Institute coursework.
 ---
 
 **PuzzleForge** - Crafted Challenges. Sharpened Minds.
+
 
 
 
