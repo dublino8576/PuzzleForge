@@ -3,11 +3,6 @@
 @source "../../node_modules/flowbite";
 @import "flowbite/src/themes/default";
 
-/* h1.luckiest-guy-regular {
-  font-family: "Luckiest Guy", cursive !important;
-  font-weight: 400 !important;
-  font-style: normal !important;
-} */
 body {
   font-family: "Luckiest Guy", cursive;
 }
@@ -19,7 +14,7 @@ span {
   font-family: "Nunito", sans-serif;
 }
 
-/* (sources declared at top) */
+/* Gradient text animation for headers */
 
 header h1,
 #achievements-section h2 {
