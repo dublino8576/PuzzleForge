@@ -257,7 +257,7 @@ function drawGrid(
   const cellHeight = drawHeight / rows;
 
   ctx.save(); /* save current canvas state */
-  ctx.strokeStyle = "rgba(255, 255, 255, 0.9)";
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
   ctx.lineWidth = 2; /* set line width for grid lines */
 
   /* draw rectangle border for each puzzle piece within the image area */
@@ -282,6 +282,20 @@ function drawPuzzle(ctx, canvasEl, img, pieces, rows, cols) {
   /* clear canvas */
   ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
 
+  /* compute correct image position and dimensions from pieces */
+  const originX = Math.min(...pieces.map((p) => p.correctX));
+  const originY = Math.min(...pieces.map((p) => p.correctY));
+  const drawWidth =
+    Math.max(...pieces.map((p) => p.correctX + p.width)) - originX;
+  const drawHeight =
+    Math.max(...pieces.map((p) => p.correctY + p.height)) - originY;
+
+  /* draw opaque hint image in background */
+  ctx.save(); /* save current canvas state */
+  ctx.globalAlpha = 0.5; /* subtle opacity for hint */
+  ctx.drawImage(img, originX, originY, drawWidth, drawHeight);
+  ctx.restore();
+
   /* draw each piece of the image at its current position */
   pieces.forEach((piece) => {
     ctx.drawImage(
@@ -297,13 +311,7 @@ function drawPuzzle(ctx, canvasEl, img, pieces, rows, cols) {
     );
   });
 
-  /* draw grid over pieces using their intended area */
-  const originX = Math.min(...pieces.map((p) => p.correctX));
-  const originY = Math.min(...pieces.map((p) => p.correctY));
-  const drawWidth =
-    Math.max(...pieces.map((p) => p.correctX + p.width)) - originX;
-  const drawHeight =
-    Math.max(...pieces.map((p) => p.correctY + p.height)) - originY;
+  /* draw grid overlay */
   drawGrid(ctx, canvasEl, rows, cols, originX, originY, drawWidth, drawHeight);
 }
 
