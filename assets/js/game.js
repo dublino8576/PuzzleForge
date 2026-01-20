@@ -5,9 +5,6 @@ import { difficultyLvl, getRowsCols } from "./difficultyLvl.js";
 window.addEventListener("DOMContentLoaded", function () {
   const canvas = document.getElementById("puzzle-canvas");
   const context = canvas.getContext("2d");
-  /*canvas max width and height for responsive devices */
-  const maxImageWidth = window.innerWidth * 0.65; // 65% of viewport width
-  const maxImageHeight = window.innerHeight * 0.65; // 65% of viewport height
   /*set canvas dimensions with image uploaded */
   const image = new Image();
   image.src = getImageURL();
@@ -18,6 +15,13 @@ window.addEventListener("DOMContentLoaded", function () {
   /* current difficulty level */
   let currentDifficulty = "easy"; // default
   let { rows, cols } = getRowsCols(currentDifficulty);
+  /* store old dimensions for scaling on resize */
+  let oldCanvasWidth = 0;
+  let oldCanvasHeight = 0;
+  let oldOriginX = 0;
+  let oldOriginY = 0;
+  let oldDrawWidth = 0;
+  let oldDrawHeight = 0;
 
   const rebuildPuzzle = function () {
     if (!image.complete || !image.naturalWidth)
@@ -29,6 +33,8 @@ window.addEventListener("DOMContentLoaded", function () {
     canvas.height = puzzleSection.clientHeight;
 
     /* compute scaled image size within 65% viewport, preserve aspect */
+    const maxImageWidth = window.innerWidth * 0.65; // 65% of viewport width
+    const maxImageHeight = window.innerHeight * 0.65; // 65% of viewport height
     const scale = Math.min(
       maxImageWidth / image.naturalWidth,
       maxImageHeight / image.naturalHeight,
@@ -57,6 +63,77 @@ window.addEventListener("DOMContentLoaded", function () {
     shufflePuzzlePieces(puzzlePieces, canvas);
     /* redraw with shuffled pieces */
     drawPuzzle(context, canvas, image, puzzlePieces, rows, cols);
+
+    /* store dimensions for resize scaling */
+    oldCanvasWidth = canvas.width;
+    oldCanvasHeight = canvas.height;
+    oldOriginX = originX;
+    oldOriginY = originY;
+    oldDrawWidth = drawWidth;
+    oldDrawHeight = drawHeight;
+  };
+
+  const resizePuzzle = function () {
+    if (!image.complete || !image.naturalWidth || puzzlePieces.length === 0)
+      return;
+
+    /* set canvas to match parent section size */
+    const puzzleSection = document.getElementById("puzzle-section");
+    const newCanvasWidth = puzzleSection.clientWidth;
+    const newCanvasHeight = puzzleSection.clientHeight;
+
+    /* compute new scaled image size */
+    const maxImageWidth = window.innerWidth * 0.65;
+    const maxImageHeight = window.innerHeight * 0.65;
+    const scale = Math.min(
+      maxImageWidth / image.naturalWidth,
+      maxImageHeight / image.naturalHeight,
+      1,
+    );
+    const newDrawWidth = image.naturalWidth * scale;
+    const newDrawHeight = image.naturalHeight * scale;
+    const newOriginX = (newCanvasWidth - newDrawWidth) / 2;
+    const newOriginY = (newCanvasHeight - newDrawHeight) / 2;
+
+    /* calculate scale ratios */
+    const scaleX = newDrawWidth / oldDrawWidth;
+    const scaleY = newDrawHeight / oldDrawHeight;
+
+    /* update canvas size */
+    canvas.width = newCanvasWidth;
+    canvas.height = newCanvasHeight;
+
+    /* scale all piece positions and dimensions */
+    ({ rows, cols } = getRowsCols(currentDifficulty));
+    const pieceWidth = newDrawWidth / cols;
+    const pieceHeight = newDrawHeight / rows;
+
+    puzzlePieces.forEach((piece) => {
+      /* scale current position relative to old origin */
+      const relativeX = piece.currentX - oldOriginX;
+      const relativeY = piece.currentY - oldOriginY;
+      piece.currentX = newOriginX + relativeX * scaleX;
+      piece.currentY = newOriginY + relativeY * scaleY;
+
+      /* recalculate correct position */
+      piece.correctX = newOriginX + piece.col * pieceWidth;
+      piece.correctY = newOriginY + piece.row * pieceHeight;
+
+      /* update piece dimensions */
+      piece.width = pieceWidth;
+      piece.height = pieceHeight;
+    });
+
+    /* redraw with scaled pieces */
+    drawPuzzle(context, canvas, image, puzzlePieces, rows, cols);
+
+    /* store new dimensions */
+    oldCanvasWidth = newCanvasWidth;
+    oldCanvasHeight = newCanvasHeight;
+    oldOriginX = newOriginX;
+    oldOriginY = newOriginY;
+    oldDrawWidth = newDrawWidth;
+    oldDrawHeight = newDrawHeight;
   };
 
   image.onload = function () {
@@ -80,6 +157,8 @@ window.addEventListener("DOMContentLoaded", function () {
   if (canvas.width && canvas.height) {
     const puzzleSection = document.getElementById("puzzle-section");
     const scale = 1;
+    const maxImageWidth = window.innerWidth * 0.65;
+    const maxImageHeight = window.innerHeight * 0.65;
     const drawWidth = Math.min(canvas.width, maxImageWidth);
     const drawHeight = Math.min(canvas.height, maxImageHeight);
     const originX = (puzzleSection.clientWidth - drawWidth) / 2;
@@ -153,6 +232,15 @@ window.addEventListener("DOMContentLoaded", function () {
   difficultyLvl(function (value) {
     currentDifficulty = value;
     rebuildPuzzle();
+  });
+
+  /* window resize handler with debouncing */
+  let resizeTimeout;
+  window.addEventListener("resize", function () {
+    clearTimeout(resizeTimeout); //built in Javascript functions to clear previous timeout
+    resizeTimeout = setTimeout(function () {
+      resizePuzzle(); //call resizePuzzle after timeout
+    }, 300); // 300ms debounce, only trigger resizePuzzle after resizing has stopped for 300ms
   });
 });
 ///////////////////////////////////////
