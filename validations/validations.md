@@ -24,12 +24,20 @@ Trailing forward slashes on self closing tags are the only minute thing which my
 <img width="1220" height="2190" alt="puzzleForge_HTML_validator" src="https://github.com/user-attachments/assets/c5cca46f-2ec0-4309-bcbe-e6d217a229b6" />
 
 ### CSS W3C validator
+
 Tailwind methods are used for CSS and Autoprefixer from tailwind is already applied via npm. These are the only things flagged with this CSS validator
+
+Open image file if image is stretched, here:
+[Screenshot CSS Validator](https://github.com/dublino8576/PuzzleForge/blob/main/validations/puzzleForge_css_validator.png)
 
 <img width="1280" height="6278" alt="puzzleForge_css_validator" src="https://github.com/user-attachments/assets/19465b65-9c01-4ce7-88ee-73252d57a498" />
 
 ### Javascript Lint
 #### PieHost
+Open image file if image is stretched, here:
+
+[Screenshot Javascript Lint](https://github.com/dublino8576/PuzzleForge/blob/main/validations/PuzzleForge_Javascript_validator.png)
+
 <img width="1162" height="7784" alt="PuzzleForge_Javascript_validator" src="https://github.com/user-attachments/assets/76b96ea0-be99-4080-8439-a7873cb1f6f3" />
 
 
