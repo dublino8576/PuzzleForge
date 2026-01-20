@@ -157,7 +157,7 @@ I was able to find tutorials and add scripts to package.JSON to be able to build
 
 1. Open PuzzleForge in your browser
 2. The game loads with an Easy (3×3) puzzle by default
-3. Click **"New Game"** to shuffle the current puzzle or load a new image
+3. Click **"New Game"** to load a different image and randomise puzzle pieces' positions, keeping the current difficulty settings and the number of puzzle pieces
 
 ### Playing the Puzzle
 
@@ -216,7 +216,7 @@ puzzleforge_project/
 
 - **[index.html](index.html)**: Main application entry point with semantic HTML structure
 - **[assets/js/game.js](assets/js/game.js)**: Core game logic including canvas rendering, drag-and-drop, and piece management
-- **[assets/js/difficultyLvl.js](assets/js/difficultyLvl.js)**: Exports [`difficultyLvl`](assets/js/difficultyLvl.js) and [`getRowsCols`](assets/js/difficultyLvl.js) functions
+- **[assets/js/difficultyLvl.js](assets/js/difficultyLvl.js)**: Exports [`difficultyLvl`](assets/js/difficultyLvl.js) and [`getRowsCols`](assets/js/difficultyLvl.js) functions. Separated from the main game.js file since the difficulty setting is an add-on feature to the puzzle game
 - **[assets/css/styles.css](assets/css/styles.css)**: Custom styles and Tailwind directives
 - **[tailwind.config.js](tailwind.config.js)**: Tailwind configuration with custom theme colors
 
@@ -235,20 +235,18 @@ GitHub Copilot (Claude Sonnet 4.5) was utilized throughout development for:
 - **Touch event handling**: Unified pointer event system in [`getPointerPos`](assets/js/game.js)
 - **Resize calculations**: Proportional scaling logic in [`resizePuzzle`](assets/js/game.js)
 
-**Impact**: Accelerated development by 40-50%, particularly for mathematical calculations and coordinate transformations.
+**Impact**: Accelerated development, particularly for mathematical calculations and coordinate transformations.
 
 ### Debugging Assistance
 
-- **Piece release bug**: AI identified missing `selectedPiece = null` in [`handleDrop`](assets/js/game.js)
+- **Piece release bug**: AI adjusted the accuracy of mouse coordinates in [`getMousePos`](assets/js/game.js) since I suggested some puzzle pieces' mousedown events signalled `selectedPiece = null` 
 - **Grid alignment issues**: Suggested using `originX` and `originY` parameters in [`drawGrid`](assets/js/game.js)
-- **Z-index management**: Recommended array splice/push pattern for piece ordering
 
 **Impact**: Reduced debugging time significantly by providing targeted solutions to specific issues.
 
 ### Performance/UX Optimization
 
 - **Resize debouncing**: Implemented 300ms debounce to prevent excessive re-renders
-- **Snap threshold calculation**: Dynamic threshold based on piece dimensions (33% of average)
 - **Image caching**: Suggested `image.complete` checks before rendering
 
 **Impact**: Improved game smoothness and prevented visual glitches during window resizing.
@@ -282,9 +280,6 @@ GitHub Copilot (Claude Sonnet 4.5) was utilized throughout development for:
 - [ ] **Image Upload**: Allow users to create puzzles from their own images
 - [ ] **Timer & Score**: Track completion time and moves
 - [ ] **Achievements System**: Unlock badges for milestones
-- [ ] **Difficulty Presets**: Add more grid size options (4×4, 8×8)
-- [ ] **Puzzle Preview**: Toggle hint image visibility
-- [ ] **Save Progress**: Store current puzzle state in localStorage
 - [ ] **Sound Effects**: Audio feedback for piece placement
 - [ ] **Animations**: Smooth transitions for piece snapping
 
@@ -310,14 +305,12 @@ GitHub Copilot (Claude Sonnet 4.5) was utilized throughout development for:
 ### Code Attributions
 
 - Theme toggle functionality: Adapted from [Flowbite Documentation](https://flowbite.com/docs/customize/dark-mode/)
-- Canvas drag-and-drop pattern: Inspired by [MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API)
+- Canvas drag-and-drop pattern: Inspired by [JavaScript Tutorial - PuzzleCam Game]([https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API](https://www.youtube.com/watch?v=HS6KHYIYdXc&t=1502s)
 
 ### Development Tools
 
 - **AI Assistant**: GitHub Copilot (Claude Sonnet 4.5) for code generation and debugging
-- **UI Framework**: Tailwind CSS and Flowbite components
-- **Linting**: ESLint with recommended JavaScript rules
-
+- **UI Framework**: Tailwind CSS (via npm + Postcss) and Flowbite components
 ---
 
 ## License
@@ -328,12 +321,13 @@ This project is for educational purposes as part of Code Institute coursework.
 
 ## Contact
 
-**Developer**: [Your Name]  
-**GitHub**: [Your GitHub Profile](https://github.com/yourusername)  
-**Email**: your.email@example.com
+**Developer**: Luca Di Maio 
+**GitHub**: [dublino8576](https://github.com/dublino8576)  
+**Email**: lucadimaio@gmail.com
 
 ---
 
 **PuzzleForge** - Crafted Challenges. Sharpened Minds.
+
 
 
