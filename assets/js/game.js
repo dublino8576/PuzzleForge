@@ -1,3 +1,6 @@
+/* import difficulty level helpers */
+import { difficultyLvl, getRowsCols } from "./difficultyLvl.js";
+
 /* load script when page is fully loaded */
 window.addEventListener("DOMContentLoaded", function () {
   const canvas = document.getElementById("puzzle-canvas");
@@ -12,7 +15,14 @@ window.addEventListener("DOMContentLoaded", function () {
   /* array to store puzzle pieces */
   let puzzlePieces = [];
   let selectedPiece = null;
-  image.onload = function () {
+  /* current difficulty level */
+  let currentDifficulty = "easy"; // default
+  let { rows, cols } = getRowsCols(currentDifficulty);
+
+  const rebuildPuzzle = function () {
+    if (!image.complete || !image.naturalWidth)
+      return; /* guard until image is ready */
+
     /* set canvas to match parent section size */
     const puzzleSection = document.getElementById("puzzle-section");
     canvas.width = puzzleSection.clientWidth;
@@ -29,12 +39,13 @@ window.addEventListener("DOMContentLoaded", function () {
     /* center the image inside the larger canvas */
     const originX = (canvas.width - drawWidth) / 2;
     const originY = (canvas.height - drawHeight) / 2;
-
+    ({ rows, cols } = getRowsCols(currentDifficulty));
     /* initialize puzzle pieces as rectangles tied to the scaled image */
+
     puzzlePieces = initializePuzzlePieces(
       canvas,
-      3,
-      3,
+      rows,
+      cols,
       originX,
       originY,
       drawWidth,
@@ -45,7 +56,11 @@ window.addEventListener("DOMContentLoaded", function () {
     /* shuffle pieces to random positions within the canvas area */
     shufflePuzzlePieces(puzzlePieces, canvas);
     /* redraw with shuffled pieces */
-    drawPuzzle(context, canvas, image, puzzlePieces);
+    drawPuzzle(context, canvas, image, puzzlePieces, rows, cols);
+  };
+
+  image.onload = function () {
+    rebuildPuzzle();
   };
 
   //////////
@@ -69,10 +84,11 @@ window.addEventListener("DOMContentLoaded", function () {
     const drawHeight = Math.min(canvas.height, maxImageHeight);
     const originX = (puzzleSection.clientWidth - drawWidth) / 2;
     const originY = (puzzleSection.clientHeight - drawHeight) / 2;
+    ({ rows, cols } = getRowsCols(currentDifficulty));
     puzzlePieces = initializePuzzlePieces(
       canvas,
-      3,
-      3,
+      rows,
+      cols,
       originX,
       originY,
       drawWidth,
@@ -80,7 +96,16 @@ window.addEventListener("DOMContentLoaded", function () {
       drawWidth,
       drawHeight,
     );
-    drawGrid(context, canvas, 3, 3, originX, originY, drawWidth, drawHeight);
+    drawGrid(
+      context,
+      canvas,
+      rows,
+      cols,
+      originX,
+      originY,
+      drawWidth,
+      drawHeight,
+    );
   }
   // When you press the mouse button, we find exactly where you clicked on the canvas
   // We check if that position is inside any puzzle piece
@@ -110,7 +135,7 @@ window.addEventListener("DOMContentLoaded", function () {
       /* update piece position based on mouse movement and offset */
       selectedPiece.currentX = x - selectedPiece.offset.x; //mouse position minus offset
       selectedPiece.currentY = y - selectedPiece.offset.y; //mouse position minus offset
-      drawPuzzle(context, canvas, image, puzzlePieces); // Redraw the puzzle with the piece in its new position
+      drawPuzzle(context, canvas, image, puzzlePieces, rows, cols); // Redraw the puzzle with the piece in its new position
     }
   });
 
@@ -121,7 +146,13 @@ window.addEventListener("DOMContentLoaded", function () {
       selectedPiece.snap();
     }
     selectedPiece = null; // always release the piece
-    drawPuzzle(context, canvas, image, puzzlePieces); // redraw after release
+    drawPuzzle(context, canvas, image, puzzlePieces, rows, cols); // redraw after release
+  });
+
+  /* listen for difficulty changes and rebuild puzzle accordingly */
+  difficultyLvl(function (value) {
+    currentDifficulty = value;
+    rebuildPuzzle();
   });
 });
 ///////////////////////////////////////
@@ -155,8 +186,8 @@ function getImageURL() {
 
 function initializePuzzlePieces(
   canvasEl,
-  rows = 3,
-  cols = 3,
+  rows,
+  cols,
   originX = 0,
   originY = 0,
   drawWidth,
@@ -213,8 +244,8 @@ function initializePuzzlePieces(
 function drawGrid(
   ctx,
   canvasEl,
-  rows = 3,
-  cols = 3,
+  rows,
+  cols,
   originX = 0,
   originY = 0,
   drawWidth = canvasEl.width,
@@ -247,7 +278,7 @@ function drawGrid(
 /* Draw puzzle pieces at their current positions */
 /////////////
 
-function drawPuzzle(ctx, canvasEl, img, pieces) {
+function drawPuzzle(ctx, canvasEl, img, pieces, rows, cols) {
   /* clear canvas */
   ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
 
@@ -273,7 +304,7 @@ function drawPuzzle(ctx, canvasEl, img, pieces) {
     Math.max(...pieces.map((p) => p.correctX + p.width)) - originX;
   const drawHeight =
     Math.max(...pieces.map((p) => p.correctY + p.height)) - originY;
-  drawGrid(ctx, canvasEl, 3, 3, originX, originY, drawWidth, drawHeight);
+  drawGrid(ctx, canvasEl, rows, cols, originX, originY, drawWidth, drawHeight);
 }
 
 /////////////
@@ -353,3 +384,7 @@ function snap(piece) {
   piece.currentX = piece.correctX;
   piece.currentY = piece.correctY;
 }
+
+/* required difficultyLvl function from difficultyLvl.js */
+
+export { drawGrid };
