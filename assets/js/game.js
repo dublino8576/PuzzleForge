@@ -63,7 +63,6 @@ window.addEventListener("DOMContentLoaded", function () {
 
   // initial grid draw (will redraw on image load above)
   if (canvas.width && canvas.height) {
-    console.log("initial grid draw");
     const puzzleSection = document.getElementById("puzzle-section");
     const scale = 1;
     const drawWidth = Math.min(canvas.width, maxImageWidth);
@@ -91,9 +90,7 @@ window.addEventListener("DOMContentLoaded", function () {
     const { x, y } = getMousePos(canvas, e); // Get where you clicked (relative to canvas)
     selectedPiece = pressedPiece(x, y, puzzlePieces); // Check if you clicked a piece
     /* Offset needed to drag piece from cursor position smoothly, registers mouse movement to the selected piece */
-    console.log("selected piece:", selectedPiece);
     if (selectedPiece !== null) {
-      console.log("puzzle piece gets picked up", selectedPiece);
       const index = puzzlePieces.indexOf(selectedPiece);
       if (index > -1) {
         puzzlePieces.splice(index, 1); // Remove the selected piece from its current position
@@ -167,7 +164,6 @@ function initializePuzzlePieces(
   imageNaturalWidth,
   imageNaturalHeight,
 ) {
-  console.log("initializing puzzle pieces");
   /* create array of puzzle piece objects, each representing a rectangular section */
   const pieces = [];
   const pieceWidth = drawWidth / cols;
@@ -287,7 +283,6 @@ function drawPuzzle(ctx, canvasEl, img, pieces) {
 function shufflePuzzlePieces(pieces, canvasEl) {
   const sectionWidth = canvasEl.width;
   const sectionHeight = canvasEl.height;
-  console.log(sectionWidth, sectionHeight);
   for (let i = 0; i < pieces.length; i++) {
     let location = {
       x: Math.random() * (sectionWidth - pieces[i].width),
@@ -346,7 +341,6 @@ function isClose(piece) {
 
   /* Check if distance is within threshold */
   const isCorrectLocation = distance <= threshold;
-  console.log(isCorrectLocation);
   return isCorrectLocation;
 }
 
@@ -356,7 +350,6 @@ function isClose(piece) {
 
 function snap(piece) {
   /* Move piece to correct location */
-  console.log("correct position: ", piece.correctX, piece.correctY);
   piece.currentX = piece.correctX;
   piece.currentY = piece.correctY;
 }
