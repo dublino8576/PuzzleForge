@@ -499,7 +499,3 @@ function snap(piece) {
   piece.currentX = piece.correctX;
   piece.currentY = piece.correctY;
 }
-
-/* required difficultyLvl function from difficultyLvl.js */
-
-export { drawGrid };
