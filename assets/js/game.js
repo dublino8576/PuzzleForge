@@ -380,7 +380,7 @@ function drawPuzzle(ctx, canvasEl, img, pieces, rows, cols) {
 
   /* draw opaque hint image in background */
   ctx.save(); /* save current canvas state */
-  ctx.globalAlpha = 0.5; /* subtle opacity for hint */
+  ctx.globalAlpha = 0.3; /* subtle opacity for hint */
   ctx.drawImage(img, originX, originY, drawWidth, drawHeight);
   ctx.restore();
 
