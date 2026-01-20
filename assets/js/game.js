@@ -82,14 +82,23 @@ window.addEventListener("DOMContentLoaded", function () {
     );
     drawGrid(context, canvas, 3, 3, originX, originY, drawWidth, drawHeight);
   }
+  // When you press the mouse button, we find exactly where you clicked on the canvas
+  // We check if that position is inside any puzzle piece
+  // Offset = the distance from the piece's corner to where your mouse is. If you click in the middle of a piece, the offset remembers "you grabbed it 25px from the left and 15px from the top"
+
   canvas.addEventListener("mousedown", function (e) {
-    const { x, y } = getMousePos(canvas, e);
-    selectedPiece = pressedPiece(x, y, puzzlePieces);
+    const { x, y } = getMousePos(canvas, e); // Get where you clicked (relative to canvas)
+    selectedPiece = pressedPiece(x, y, puzzlePieces); // Check if you clicked a piece
     /* Offset needed to drag piece from cursor position smoothly, registers mouse movement to the selected piece */
     if (selectedPiece !== null) {
+      const index = puzzlePieces.indexOf(selectedPiece);
+      if (index > -1) {
+        puzzlePieces.splice(index, 1); // Remove the selected piece from its current position
+        puzzlePieces.push(selectedPiece); // Add it to the end of the array (top of draw order)
+      }
       selectedPiece.offset = {
-        x: x - selectedPiece.currentX,
-        y: y - selectedPiece.currentY,
+        x: x - selectedPiece.currentX, // Distance from piece's left edge to your click
+        y: y - selectedPiece.currentY, // Distance from piece's top edge to your click
       };
     }
   });
@@ -97,20 +106,24 @@ window.addEventListener("DOMContentLoaded", function () {
   /* mousemove event to drag selected piece */
   canvas.addEventListener("mousemove", function (e) {
     if (selectedPiece) {
-      const { x, y } = getMousePos(canvas, e);
+      const { x, y } = getMousePos(canvas, e); // Get current mouse position
       /* update piece position based on mouse movement and offset */
-      selectedPiece.currentX = x - selectedPiece.offset.x;
-      selectedPiece.currentY = y - selectedPiece.offset.y;
-      drawPuzzle(context, canvas, image, puzzlePieces);
+      selectedPiece.currentX = x - selectedPiece.offset.x; //mouse position minus offset
+      selectedPiece.currentY = y - selectedPiece.offset.y; //mouse position minus offset
+      drawPuzzle(context, canvas, image, puzzlePieces); // Redraw the puzzle with the piece in its new position
     }
   });
 
-  /* release on mouseup */
+  /* release piece on mouseup */
   canvas.addEventListener("mouseup", function () {
-    selectedPiece = null;
+    if (!selectedPiece) return;
+    if (selectedPiece.isClose()) {
+      selectedPiece.snap();
+    }
+    selectedPiece = null; // always release the piece
+    drawPuzzle(context, canvas, image, puzzlePieces); // redraw after release
   });
 });
-
 ///////////////////////////////////////
 
 /* functions used for event listeners */
@@ -178,6 +191,14 @@ function initializePuzzlePieces(
         /* correct position for win condition check */
         correctX: originX + col * pieceWidth,
         correctY: originY + row * pieceHeight,
+        /* method to check if piece is close to correct location */
+        isClose: function () {
+          return isClose(this);
+        },
+        /* method to snap piece to correct location */
+        snap: function () {
+          snap(this);
+        },
       });
     }
   }
@@ -262,7 +283,6 @@ function drawPuzzle(ctx, canvasEl, img, pieces) {
 function shufflePuzzlePieces(pieces, canvasEl) {
   const sectionWidth = canvasEl.width;
   const sectionHeight = canvasEl.height;
-  console.log(sectionWidth, sectionHeight);
   for (let i = 0; i < pieces.length; i++) {
     let location = {
       x: Math.random() * (sectionWidth - pieces[i].width),
@@ -278,7 +298,7 @@ function shufflePuzzlePieces(pieces, canvasEl) {
 /////////////
 
 function pressedPiece(x, y, pieces) {
-  for (let i = 0; i < pieces.length; i++) {
+  for (let i = pieces.length - 1; i >= 0; i--) {
     const piece = pieces[i];
     if (
       x >= piece.currentX &&
@@ -292,11 +312,44 @@ function pressedPiece(x, y, pieces) {
   return null;
 }
 
-/* convert mouse coordinates to canvas space */
+/* convert mouse coordinates to canvas space
+since coordinates from mouse event are relative to the viewport and canvas is not positioned at the top-left corner (0,0) of the viewport */
 function getMousePos(canvasEl, e) {
-  const rect = canvasEl.getBoundingClientRect();
+  const rect = canvasEl.getBoundingClientRect(); //Gets the exact position and size of the canvas element on the screen
+  /* account for devicePixelRatio or CSS scaling so hit-testing stays accurate */
+  const scaleX = canvasEl.width / rect.width;
+  const scaleY = canvasEl.height / rect.height;
   return {
-    x: e.clientX - rect.left,
-    y: e.clientY - rect.top,
+    x: (e.clientX - rect.left) * scaleX, //left edge of canvas scaled to drawing buffer
+    y: (e.clientY - rect.top) * scaleY, //top edge of canvas scaled to drawing buffer
+    //clientX and clientY are mouse coordinates relative to the viewport
   };
+}
+
+/////////
+/* Methods added to puzzle piece for snapping and proximity check */
+/////////
+
+function isClose(piece) {
+  /* Calculate distance between current and correct position */
+  const dx = piece.currentX - piece.correctX;
+  const dy = piece.currentY - piece.correctY;
+  const distance = Math.sqrt(dx * dx + dy * dy);
+
+  /* Set threshold to 33% of average piece dimension */
+  const threshold = ((piece.width + piece.height) / 2) * 0.33;
+
+  /* Check if distance is within threshold */
+  const isCorrectLocation = distance <= threshold;
+  return isCorrectLocation;
+}
+
+/////////
+/* Snap piece to its correct position */
+/////////
+
+function snap(piece) {
+  /* Move piece to correct location */
+  piece.currentX = piece.correctX;
+  piece.currentY = piece.correctY;
 }
