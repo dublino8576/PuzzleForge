@@ -2,6 +2,9 @@
 
 PuzzleForge is an interactive web-based puzzle game that challenges players to reassemble randomly shuffled image pieces. Built with Canvas HTML tag, vanilla JavaScript, and styled with Tailwind CSS, it offers an engaging puzzle-solving experience with multiple difficulty levels suitable for all players. 
 
+Before committing to the project, I studied online tutorials regarding mouse events and their compatibility with the technologies used. I gravitated towards using HTML canvas since it has the possibility of adding animations, and it is more malleable than HTML grid. I have also chosen Canvas API over Drag and Drop API as the latter is mainly used for Kanban-board style drag & drop, not implementation of game effects.
+This process of elimination ensures ease in future scalability and delivers a promising MVP.
+
 [Live Demo](https://dublino8576.github.io/PuzzleForge/) 
 
 To view the Kanban board, follow the link below:
@@ -328,6 +331,7 @@ This project is for educational purposes as part of Code Institute coursework.
 ---
 
 **PuzzleForge** - Crafted Challenges. Sharpened Minds.
+
 
 
 
